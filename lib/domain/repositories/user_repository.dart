@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:image_picker/image_picker.dart';
 
-import '../../data/services/firebase_services.dart';
+import '../../data/services/remote/firebase_services.dart';
 import '../models/user_model.dart';
 
 class UserRepository {

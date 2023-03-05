@@ -1,3 +1,5 @@
+import 'package:ease_it/data/services/local/local_storage_service.dart';
+import 'package:ease_it/ui/home/home_screen.dart';
 import 'package:ease_it/ui/login/login_screen.dart';
 import 'package:ease_it/utils/app_configuration.dart';
 import 'package:ease_it/utils/app_router.dart';
@@ -12,7 +14,11 @@ import 'domain/repositories/user_repository.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await StorageService.getInstance();
   await Firebase.initializeApp();
+  isLoggedIn = await StorageService.instance
+      .getLocalStorageData('loginStatus', 'status');
+  isLoggedIn ??= false;
   final appData = AppConfiguration(
     appTitle: 'EaseIt',
     child: EaseIt(),
@@ -21,7 +27,11 @@ void main() async {
       .then((value) => runApp(appData));
 }
 
+late bool? isLoggedIn;
+
 class EaseIt extends StatefulWidget {
+  const EaseIt({super.key});
+
   @override
   State<EaseIt> createState() => _EaseItState();
 }
@@ -40,7 +50,7 @@ class _EaseItState extends State<EaseIt> {
               title: AppConfiguration.of(context).appTitle,
               debugShowCheckedModeBanner: false,
               onGenerateRoute: AppRouter.generateRoute,
-              initialRoute: LoginScreen.id,
+              initialRoute: isLoggedIn! ? HomeScreen.id : LoginScreen.id,
               routes: <String, WidgetBuilder>{
                 '/': (ctx) => const LoginScreen(),
               },
