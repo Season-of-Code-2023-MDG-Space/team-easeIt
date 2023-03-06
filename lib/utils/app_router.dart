@@ -1,4 +1,5 @@
 import 'package:ease_it/ui/starting_info/starting_info_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../ui/home/home_screen.dart';
@@ -15,7 +16,8 @@ class AppRouter {
         );
       case SignUpScreen.id:
         return MaterialPageRoute<Widget>(
-          builder: (BuildContext context) => const SignUpScreen(),
+          builder: (BuildContext context) => SignUpScreen(
+              phoneNumber: FirebaseAuth.instance.currentUser!.phoneNumber!),
         );
       case StartingInfoScreen.id:
         return MaterialPageRoute<Widget>(

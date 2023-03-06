@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../domain/models/user_model.dart' as user;
+
 class FirebaseService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
@@ -38,6 +40,12 @@ class FirebaseService {
     } else {
       return 'sign-up';
     }
+  }
+
+  Future<user.User> getUserDetails(String uid) async {
+    final document = await _firestore.collection('users').doc(uid).get();
+    final Map<String, dynamic> data = document.data()!;
+    return user.User.fromJson(data);
   }
 }
 // Future<user.User> getUserDetails(String uid) async {}
