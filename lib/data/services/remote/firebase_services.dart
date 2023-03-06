@@ -30,5 +30,14 @@ class FirebaseService {
     }
     return url;
   }
+
+  Future<String> getPath(String uid) async {
+    final document = await _firestore.collection('users').doc(uid).get();
+    if (document.exists) {
+      return 'home';
+    } else {
+      return 'sign-up';
+    }
+  }
 }
 // Future<user.User> getUserDetails(String uid) async {}

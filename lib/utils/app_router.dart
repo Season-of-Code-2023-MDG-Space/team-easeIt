@@ -1,3 +1,4 @@
+import 'package:ease_it/ui/starting_info/starting_info_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../ui/home/home_screen.dart';
@@ -16,6 +17,10 @@ class AppRouter {
         return MaterialPageRoute<Widget>(
           builder: (BuildContext context) => const SignUpScreen(),
         );
+      case StartingInfoScreen.id:
+        return MaterialPageRoute<Widget>(
+          builder: (BuildContext context) => const StartingInfoScreen(),
+        );
       case HomeScreen.id:
         return MaterialPageRoute<Widget>(
           builder: (BuildContext context) => const HomeScreen(),
@@ -23,7 +28,7 @@ class AppRouter {
       default:
         return MaterialPageRoute<Widget>(
           builder: (_) => const Scaffold(
-            backgroundColor: AppTheme.green,
+            backgroundColor: AppTheme.blue,
             body: Center(
               child: CircularProgressIndicator(),
             ),

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:image_picker/image_picker.dart';
 
@@ -29,10 +30,9 @@ class UserRepository {
   //       await _firebaseService.getUserDetails(authinstance.currentUser!.uid);
   //   return result;
   // }
-
-  // Future<String> getPath() async {
-  //   final result =
-  //       await _firebaseService.getPath(authinstance.currentUser!.uid);
-  //   return result;
-  // }
+  Future<String> getPath() async {
+    final result =
+        await _firebaseService.getPath(authinstance.currentUser!.uid);
+    return result;
+  }
 }
