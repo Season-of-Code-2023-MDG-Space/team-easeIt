@@ -45,7 +45,7 @@ class HomeScreen extends StatelessWidget {
             ],
           ),
           actions: [
-            Builder(builder: (Bloccontext) {
+            Builder(builder: (blocContext) {
               return IconButton(
                 onPressed: () {
                   showDialog(
@@ -59,7 +59,8 @@ class HomeScreen extends StatelessWidget {
                                     builder: (context) => TextButton(
                                       child: const Text('Yes'),
                                       onPressed: () {
-                                        Bloccontext.read<HomeBloc>()
+                                        blocContext
+                                            .read<HomeBloc>()
                                             .add(const Logout());
                                       },
                                     ),
