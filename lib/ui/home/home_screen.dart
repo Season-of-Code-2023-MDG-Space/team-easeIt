@@ -1,3 +1,5 @@
+import 'package:ease_it/ui/widgets/pdf_results.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -35,7 +37,7 @@ class HomeScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               Text(
-                'Hello UserName!',
+                'Hello !',
                 style: AppTheme.h4,
               ),
               Text(
@@ -111,13 +113,119 @@ class _HomeBodyState extends State<HomeBody> {
   Widget build(BuildContext context) {
     return BlocConsumer<HomeBloc, HomeState>(
       builder: (context, state) {
-        if (state is Success) {
-          return const SingleChildScrollView();
+        if (state is Success || state is HomeInitial) {
+          return SizedBox(
+            height: double.infinity,
+            width: double.infinity,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                        top: 10.h, bottom: 5.h, right: 10.w, left: 10.w),
+                    child: GestureDetector(
+                      onTap: () {
+                        context.read<HomeBloc>().add(const PDFPickEvent());
+                      },
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: Card(
+                          elevation: 2,
+                          color: Colors.pink.withAlpha(70),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.file_copy_outlined,
+                                  color: AppTheme.blue, size: 50.w),
+                              SizedBox(width: 10.w),
+                              Text(
+                                'Search in PDFs',
+                                style:
+                                    AppTheme.h2.copyWith(color: AppTheme.blue),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                        top: 10.h, bottom: 5.h, right: 10.w, left: 10.w),
+                    child: GestureDetector(
+                      onTap: () {},
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: Card(
+                          elevation: 2,
+                          color: Colors.green.withAlpha(70),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.photo_library_outlined,
+                                  color: AppTheme.blue, size: 50.w),
+                              SizedBox(width: 10.w),
+                              Text(
+                                'Search in Images',
+                                style:
+                                    AppTheme.h2.copyWith(color: AppTheme.blue),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                        top: 10.h, bottom: 5.h, right: 10.w, left: 10.w),
+                    child: GestureDetector(
+                      onTap: () {
+                        print('PRESSSSSSEDDDD');
+                      },
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: Card(
+                          elevation: 2,
+                          color: Colors.amberAccent.withAlpha(70),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.camera_alt_outlined,
+                                  color: AppTheme.blue, size: 50.w),
+                              SizedBox(width: 10.w),
+                              Text(
+                                'Scan Text with Camera',
+                                style:
+                                    AppTheme.h2.copyWith(color: AppTheme.blue),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        } else if (state is ShowResultPDF) {
+          Get.to(PDFResults(
+            outputFile: state.pdfFile,
+            resultsData: state.resultsData,
+          ));
         } else if (state is Error) {
           return Center(
               child: Text('Something Went Wrong!',
                   style: AppTheme.h2.copyWith(color: Colors.red)));
         }
+        print(state);
         return const Center(child: CircularProgressIndicator());
       },
       listener: (context, state) {

@@ -40,3 +40,11 @@ class LogoutSuccess extends HomeState {
   @override
   List<Object?> get props => [];
 }
+
+class ShowResultPDF extends HomeState {
+  ShowResultPDF({required this.pdfFile, required this.resultsData});
+  File pdfFile;
+  List<MatchedItem> resultsData;
+  @override
+  List<Object?> get props => [pdfFile, resultsData];
+}

@@ -17,3 +17,10 @@ class Logout extends HomeEvent {
   @override
   List<Object?> get props => [];
 }
+
+class PDFPickEvent extends HomeEvent {
+  const PDFPickEvent();
+
+  @override
+  List<Object?> get props => [];
+}
