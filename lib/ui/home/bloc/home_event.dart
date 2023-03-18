@@ -19,8 +19,8 @@ class Logout extends HomeEvent {
 }
 
 class PDFPickEvent extends HomeEvent {
-  const PDFPickEvent();
-
+  const PDFPickEvent({required this.textToFind});
+  final String textToFind;
   @override
   List<Object?> get props => [];
 }

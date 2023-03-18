@@ -1,5 +1,4 @@
 import 'package:ease_it/ui/widgets/pdf_results.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -86,7 +85,7 @@ class HomeScreen extends StatelessWidget {
             }),
           ],
         ),
-        body: HomeBody(),
+        body: const HomeBody(),
         floatingActionButton: Padding(
           padding: EdgeInsets.all(10.h),
           child: FloatingActionButton(
@@ -109,6 +108,7 @@ class HomeBody extends StatefulWidget {
 }
 
 class _HomeBodyState extends State<HomeBody> {
+  String textToFind = '';
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<HomeBloc, HomeState>(
@@ -125,31 +125,74 @@ class _HomeBodyState extends State<HomeBody> {
                   child: Padding(
                     padding: EdgeInsets.only(
                         top: 10.h, bottom: 5.h, right: 10.w, left: 10.w),
-                    child: GestureDetector(
-                      onTap: () {
-                        context.read<HomeBloc>().add(const PDFPickEvent());
-                      },
-                      child: SizedBox(
-                        width: double.infinity,
-                        child: Card(
-                          elevation: 2,
-                          color: Colors.pink.withAlpha(70),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.file_copy_outlined,
-                                  color: AppTheme.blue, size: 50.w),
-                              SizedBox(width: 10.w),
-                              Text(
-                                'Search in PDFs',
-                                style:
-                                    AppTheme.h2.copyWith(color: AppTheme.blue),
-                              ),
-                            ],
+                    child: Builder(builder: (newContext) {
+                      return GestureDetector(
+                        onTap: () async {
+                          showDialog(
+                              context: context,
+                              builder: (ctx) {
+                                return AlertDialog(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15.r),
+                                    side: const BorderSide(
+                                        width: 2, color: AppTheme.blue),
+                                  ),
+                                  backgroundColor: AppTheme.lightBlue,
+                                  title: Text(
+                                    'Type Text',
+                                    style: AppTheme.h3.copyWith(
+                                        color: AppTheme.blue,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                  elevation: 5,
+                                  actions: [
+                                    TextFormField(
+                                      onChanged: (value) {
+                                        textToFind = value;
+                                      },
+                                      style: AppTheme.h4.copyWith(
+                                          color: AppTheme.greyNew,
+                                          fontWeight: FontWeight.w300),
+                                    ),
+                                    TextButton(
+                                        onPressed: () {
+                                          Get.back();
+                                          newContext.read<HomeBloc>().add(
+                                              PDFPickEvent(
+                                                  textToFind: textToFind));
+                                        },
+                                        child: Text(
+                                          'Search',
+                                          style: AppTheme.h3.copyWith(
+                                              color: AppTheme.blue,
+                                              fontWeight: FontWeight.w500),
+                                        )),
+                                  ],
+                                );
+                              });
+                        },
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: Card(
+                            elevation: 2,
+                            color: Colors.pink.withAlpha(70),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.file_copy_outlined,
+                                    color: AppTheme.blue, size: 50.w),
+                                SizedBox(width: 10.w),
+                                Text(
+                                  'Search in PDFs',
+                                  style: AppTheme.h2
+                                      .copyWith(color: AppTheme.blue),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    ),
+                      );
+                    }),
                   ),
                 ),
                 Expanded(
@@ -216,10 +259,17 @@ class _HomeBodyState extends State<HomeBody> {
             ),
           );
         } else if (state is ShowResultPDF) {
-          Get.to(PDFResults(
-            outputFile: state.pdfFile,
-            resultsData: state.resultsData,
-          ));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (_) => PDFResults(
+                        outputFile: state.pdfFile,
+                        resultsData: state.resultsData,
+                        textSearched: textToFind,
+                      ))).then((value) {
+            Navigator.pop(context);
+            Get.offAndToNamed('home');
+          });
         } else if (state is Error) {
           return Center(
               child: Text('Something Went Wrong!',

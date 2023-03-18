@@ -1,8 +1,9 @@
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:bloc/bloc.dart';
 import 'package:external_path/external_path.dart';
@@ -86,7 +87,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
                 filesPath.add(result.files[i].path!);
               }
             } else {
-              // User canceled the picker
+              emit(HomeInitial());
             }
             String dirPath = await getFilePath('PDF-3');
             try {
@@ -98,11 +99,16 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
                   PdfDocument(inputBytes: file.readAsBytesSync());
               await file.delete();
               List<MatchedItem> findResult =
-                  PdfTextExtractor(document).findText(['Fullering']);
+                  PdfTextExtractor(document).findText([event.textToFind]);
               if (findResult.isEmpty) {
                 document.dispose();
-                Get.snackbar('No Results are Found',
-                    'The Selected PDF(s) does not contains the required results.');
+                Get.snackbar(
+                  'No Results are Found',
+                  'The Selected PDF(s) does not contains the required results.',
+                  snackPosition: SnackPosition.BOTTOM,
+                  padding: EdgeInsets.symmetric(vertical: 20.h),
+                );
+                emit(HomeInitial());
               } else {
                 for (int i = 0; i < findResult.length; i++) {
                   MatchedItem item = findResult[i];
@@ -121,6 +127,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
                 final File file = File('$path/output.pdf');
                 await file.writeAsBytes(bytes);
                 File outputFile = File('$path/output.pdf');
+                // OpenFile.open('$path/output.pdf');
                 emit(ShowResultPDF(
                     pdfFile: outputFile, resultsData: findResult));
               }

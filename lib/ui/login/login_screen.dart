@@ -97,7 +97,6 @@ class _LoginBodyState extends State<LoginBody> {
                         Navigator.of(context).pop();
                       }),
                   MaterialButton(
-                    child: const Text('Confirm'),
                     textColor: Colors.white,
                     color: Colors.blue,
                     onPressed: () async {
@@ -144,6 +143,7 @@ class _LoginBodyState extends State<LoginBody> {
                             });
                       }
                     },
+                    child: const Text('Confirm'),
                   ),
                 ],
               );
@@ -210,6 +210,7 @@ class _LoginBodyState extends State<LoginBody> {
                   ),
                 ),
                 Align(
+                  alignment: Alignment.centerLeft,
                   child: Padding(
                     padding:
                         EdgeInsets.only(left: 40.w, top: 5.h, bottom: 20.h),
@@ -221,7 +222,6 @@ class _LoginBodyState extends State<LoginBody> {
                       ),
                     ),
                   ),
-                  alignment: Alignment.centerLeft,
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: 5.h, bottom: 5.h),
@@ -238,14 +238,14 @@ class _LoginBodyState extends State<LoginBody> {
                       hint: const Text('Select a Country'),
                       style: AppTheme.h4.copyWith(color: AppTheme.greyNew),
                       items: const <DropdownMenuItem<String>>[
-                        DropdownMenuItem(child: Text('India'), value: 'India'),
-                        DropdownMenuItem(child: Text('UAE'), value: 'UAE'),
+                        DropdownMenuItem(value: 'India', child: Text('India')),
+                        DropdownMenuItem(value: 'UAE', child: Text('UAE')),
                         DropdownMenuItem(
-                            child: Text('France'), value: 'France'),
-                        DropdownMenuItem(child: Text('USA'), value: 'USA'),
+                            value: 'France', child: Text('France')),
+                        DropdownMenuItem(value: 'USA', child: Text('USA')),
                       ],
                       onChanged: (value) {
-                        dropdownValue = value as String?;
+                        dropdownValue = value;
                       },
                       decoration: InputDecoration(
                         labelText: 'Country',
@@ -348,12 +348,12 @@ class _LoginBodyState extends State<LoginBody> {
                                     ),
                                     actions: <Widget>[
                                       MaterialButton(
-                                        child: const Text('Ok'),
                                         textColor: Colors.white,
                                         color: Colors.blue,
                                         onPressed: () {
                                           Navigator.of(context).pop();
                                         },
+                                        child: const Text('Ok'),
                                       )
                                     ],
                                   );
