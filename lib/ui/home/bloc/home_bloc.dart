@@ -1,8 +1,6 @@
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:bloc/bloc.dart';
@@ -15,7 +13,6 @@ import '../../../domain/models/user_model.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../../../domain/repositories/auth_repository.dart';
 import '../../../domain/repositories/user_repository.dart';
-import 'package:syncfusion_flutter_pdf/pdf.dart';
 part 'home_event.dart';
 part 'home_state.dart';
 
@@ -94,43 +91,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
               MergeMultiplePDFResponse response =
                   await PdfMerger.mergeMultiplePDF(
                       paths: filesPath, outputDirPath: dirPath);
-              final File file = File(dirPath);
-              PdfDocument document =
-                  PdfDocument(inputBytes: file.readAsBytesSync());
-              await file.delete();
-              List<MatchedItem> findResult =
-                  PdfTextExtractor(document).findText([event.textToFind]);
-              if (findResult.isEmpty) {
-                document.dispose();
-                Get.snackbar(
-                  'No Results are Found',
-                  'The Selected PDF(s) does not contains the required results.',
-                  snackPosition: SnackPosition.BOTTOM,
-                  padding: EdgeInsets.symmetric(vertical: 20.h),
-                );
-                emit(HomeInitial());
-              } else {
-                for (int i = 0; i < findResult.length; i++) {
-                  MatchedItem item = findResult[i];
-                  PdfPage page = document.pages[item.pageIndex];
-                  page.graphics.save();
-                  page.graphics.setTransparency(0.5);
-                  page.graphics.drawRectangle(
-                      bounds: item.bounds, brush: PdfBrushes.yellow);
-                  page.graphics.restore();
-                }
-                final List<int> bytes = await document.save();
-                document.dispose();
-                final Directory directory =
-                    await getApplicationDocumentsDirectory();
-                final String path = directory.path;
-                final File file = File('$path/output.pdf');
-                await file.writeAsBytes(bytes);
-                File outputFile = File('$path/output.pdf');
-                // OpenFile.open('$path/output.pdf');
-                emit(ShowResultPDF(
-                    pdfFile: outputFile, resultsData: findResult));
-              }
+              final File mergedFile = File(dirPath);
+              emit(ShowResultPDF(pdfFile: mergedFile));
             } catch (err) {
               emit(Error(err.toString()));
             }
