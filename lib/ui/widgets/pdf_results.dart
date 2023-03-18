@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:ease_it/ui/home/home_screen.dart';
 import 'package:ease_it/utils/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -36,108 +37,106 @@ class _PDFResultsState extends State<PDFResults> {
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            SizedBox(height: 20.h),
-            Padding(
-              padding: EdgeInsets.all(15.w),
-              child: TextFormField(
-                onChanged: (value) {
-                  textToFind = value;
-                },
-                decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15.r),
-                    ),
-                    labelText: 'Search Text',
-                    labelStyle: AppTheme.h3.copyWith(
-                        color: AppTheme.greyNew, fontWeight: FontWeight.w700),
-                    hintStyle: AppTheme.h4.copyWith(
-                        color: AppTheme.greyNew, fontWeight: FontWeight.w400),
-                    hintText: 'Search your text here.',
-                    suffix: IconButton(
-                      icon: const Icon(
-                        Icons.search_outlined,
-                        color: AppTheme.blue,
+    return WillPopScope(
+      onWillPop: () {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (_) => const HomeScreen()));
+        return Future.value(true);
+      },
+      child: Scaffold(
+        body: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              SizedBox(height: 20.h),
+              Padding(
+                padding: EdgeInsets.all(15.w),
+                child: TextFormField(
+                  onChanged: (value) {
+                    textToFind = value;
+                  },
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15.r),
                       ),
-                      onPressed: () {
-                        _searchResult =
-                            _pdfViewerController.searchText(textToFind);
-                        _searchResult.addListener(() {
-                          if (_searchResult.hasResult) {
-                            setState(() {});
+                      labelText: 'Search Text',
+                      labelStyle: AppTheme.h3.copyWith(
+                          color: AppTheme.greyNew, fontWeight: FontWeight.w700),
+                      hintStyle: AppTheme.h4.copyWith(
+                          color: AppTheme.greyNew, fontWeight: FontWeight.w400),
+                      hintText: 'Search your text here.',
+                      suffix: IconButton(
+                        icon: const Icon(
+                          Icons.search_outlined,
+                          color: AppTheme.blue,
+                        ),
+                        onPressed: () {
+                          _searchResult =
+                              _pdfViewerController.searchText(textToFind);
+                          _searchResult.addListener(() {
+                            if (_searchResult.hasResult) {
+                              setState(() {});
+                            }
+                          });
+                          if (!_searchResult.hasResult) {
+                            Get.snackbar(
+                              'No Results Found',
+                              'The Selected PDF(s) does not contain required results.',
+                              snackPosition: SnackPosition.BOTTOM,
+                              margin: EdgeInsets.symmetric(
+                                  vertical: 80.h, horizontal: 20.w),
+                              padding: EdgeInsets.symmetric(vertical: 20.h),
+                            );
                           }
-                        });
-                      },
-                    )),
-                style: AppTheme.h3.copyWith(
-                    color: AppTheme.greyNew, fontWeight: FontWeight.w300),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(15.w),
-              child: SizedBox(
-                height: screenHeight * 0.6,
-                width: double.infinity,
-                child: SfPdfViewer.file(
-                  widget.outputFile,
-                  controller: _pdfViewerController,
-                  currentSearchTextHighlightColor:
-                      Colors.orange.withOpacity(0.7),
-                  otherSearchTextHighlightColor: Colors.yellow.withOpacity(0.3),
+                        },
+                      )),
+                  style: AppTheme.h3.copyWith(
+                      color: AppTheme.greyNew, fontWeight: FontWeight.w300),
                 ),
               ),
-            ),
-            SizedBox(height: screenHeight * 0.085),
-            Container(
-              height: screenHeight * 0.1,
-              color: AppTheme.blue,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  IconButton(
-                      onPressed: () {
-                        _searchResult.hasResult
-                            ? _searchResult.previousInstance()
-                            : Get.snackbar(
-                                'No Results',
-                                'No Results.',
-                                snackPosition: SnackPosition.BOTTOM,
-                                margin: EdgeInsets.symmetric(
-                                    vertical: 80.h, horizontal: 20.w),
-                                padding: EdgeInsets.symmetric(vertical: 20.h),
-                              );
-                        // setState(() {});
-                      },
-                      icon: const Icon(
-                        Icons.chevron_left,
-                        color: AppTheme.lightBlue,
-                      )),
-                  IconButton(
-                      onPressed: () {
-                        _searchResult.hasResult
-                            ? _searchResult.nextInstance()
-                            : Get.snackbar(
-                                'No Results',
-                                'No results.',
-                                snackPosition: SnackPosition.BOTTOM,
-                                margin: EdgeInsets.symmetric(
-                                    vertical: 80.h, horizontal: 20.w),
-                                padding: EdgeInsets.symmetric(vertical: 20.h),
-                              );
-                        // setState(() {});
-                      },
-                      icon: const Icon(
-                        Icons.chevron_right,
-                        color: AppTheme.lightBlue,
-                      )),
-                ],
+              Padding(
+                padding: EdgeInsets.all(15.w),
+                child: SizedBox(
+                  height: screenHeight * 0.6,
+                  width: double.infinity,
+                  child: SfPdfViewer.file(
+                    widget.outputFile,
+                    controller: _pdfViewerController,
+                    currentSearchTextHighlightColor:
+                        Colors.orange.withOpacity(0.7),
+                    otherSearchTextHighlightColor:
+                        Colors.yellow.withOpacity(0.3),
+                  ),
+                ),
               ),
-            ),
-          ],
+              SizedBox(height: screenHeight * 0.083),
+              Container(
+                height: screenHeight * 0.1,
+                color: AppTheme.blue,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    IconButton(
+                        onPressed: () {
+                          _searchResult.previousInstance();
+                        },
+                        icon: const Icon(
+                          Icons.chevron_left,
+                          color: AppTheme.lightBlue,
+                        )),
+                    IconButton(
+                        onPressed: () {
+                          _searchResult.nextInstance();
+                        },
+                        icon: const Icon(
+                          Icons.chevron_right,
+                          color: AppTheme.lightBlue,
+                        )),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
