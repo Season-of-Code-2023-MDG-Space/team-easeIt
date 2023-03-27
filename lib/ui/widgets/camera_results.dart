@@ -1,11 +1,15 @@
 import 'package:ease_it/ui/home/home_screen.dart';
 import 'package:ease_it/utils/app_theme.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:highlight_text/highlight_text.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../../data/services/remote/firebase_services.dart';
+import '../../domain/models/search_model.dart';
 
 class CameraResults extends StatefulWidget {
   const CameraResults({Key? key, required this.outputText}) : super(key: key);
@@ -73,16 +77,29 @@ class _CameraResultsState extends State<CameraResults> {
                                     ),
                                     TextButton(
                                       onPressed: () async {
-                                        final url =
-                                            textToFind.replaceAll(' ', '+');
-                                        print(url);
-                                        print(url);
-                                        print(url);
-                                        print(url);
-                                        if (await canLaunchUrl(
-                                            Uri.parse(url))) {}
+                                        Uri url = Uri.parse(
+                                            textToFind.replaceAll(' ', '+'));
+                                        url = Uri.parse(
+                                            'https://www.google.com/search?q=${url.toString()}');
+                                        if (await launchUrl(url)) {
+                                          url = Uri.parse(
+                                              textToFind.replaceAll(' ', '+'));
+                                          final searchData = Search(
+                                            googleUrl:
+                                                'https://www.google.com/search?q=${url.toString()}',
+                                            youtubeUrl:
+                                                'http://www.youtube.com/results?search_query=${url.toString()}',
+                                            title: textToFind,
+                                            dateCreated:
+                                                DateTime.now().toString(),
+                                          );
+                                          await FirebaseService().storeHistory(
+                                              FirebaseAuth
+                                                  .instance.currentUser!.uid,
+                                              searchData);
+                                        }
                                       },
-                                      child: Text("Ok"),
+                                      child: const Text('Search on Google!'),
                                     ),
                                   ],
                                 );
@@ -114,25 +131,7 @@ class _CameraResultsState extends State<CameraResults> {
                           Icons.search_outlined,
                           color: AppTheme.blue,
                         ),
-                        onPressed: () {
-                          // _searchResult =
-                          //     _pdfViewerController.searchText(textToFind);
-                          // _searchResult.addListener(() {
-                          //   if (_searchResult.hasResult) {
-                          //     setState(() {});
-                          //   }
-                          // });
-                          // if (!_searchResult.hasResult) {
-                          //   Get.snackbar(
-                          //     'No Results Found',
-                          //     'The Selected PDF(s) does not contain required results.',
-                          //     snackPosition: SnackPosition.BOTTOM,
-                          //     margin: EdgeInsets.symmetric(
-                          //         vertical: 80.h, horizontal: 20.w),
-                          //     padding: EdgeInsets.symmetric(vertical: 20.h),
-                          //   );
-                          // }
-                        },
+                        onPressed: () {},
                       )),
                   style: AppTheme.h3.copyWith(
                       color: AppTheme.greyNew, fontWeight: FontWeight.w300),
