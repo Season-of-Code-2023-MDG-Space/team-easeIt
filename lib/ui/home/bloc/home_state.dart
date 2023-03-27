@@ -47,3 +47,17 @@ class ShowResultPDF extends HomeState {
   @override
   List<Object?> get props => [pdfFile];
 }
+
+class ShowResultImage extends HomeState {
+  ShowResultImage({required this.text});
+  String text;
+  @override
+  List<Object?> get props => [text];
+}
+
+class ShowResultCamera extends HomeState {
+  ShowResultCamera({required this.text});
+  String text;
+  @override
+  List<Object?> get props => [text];
+}

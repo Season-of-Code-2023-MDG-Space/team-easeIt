@@ -1,10 +1,12 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ease_it/ui/login/login_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../domain/models/search_model.dart';
 import '../../../domain/models/user_model.dart' as user;
 
 class FirebaseService {
@@ -52,6 +54,48 @@ class FirebaseService {
     final document = await _firestore.collection('users').doc(uid).get();
     final Map<String, dynamic> data = document.data()!;
     return user.User.fromJson(data);
+  }
+
+  Future<List<Search>> getSearchHistory(String uid) async {
+    final document = await _firestore.collection('users').doc(uid).get();
+    final docData = document.data();
+    try {
+      final data = docData!['searches'] as List<dynamic>?;
+      List<Search> listOfSearches = [];
+      data?.forEach(
+        (element) => listOfSearches.add(
+          Search(
+              title: element['title'],
+              googleUrl: element['googleUrl'],
+              youtubeUrl: element['youtubeUrl'],
+              dateCreated: element['dateCreated']),
+        ),
+      );
+      return listOfSearches;
+    } catch (e) {
+      print(e.toString() + 'data is NULLLL');
+      return [];
+    }
+  }
+
+  Future<void> storeHistory(String uid, Search searchData) async {
+    final searchMap = searchData.toJson();
+    try {
+      await _firestore.collection('users').doc(uid).update(
+        {
+          'searches': FieldValue.arrayUnion(
+            [
+              searchMap,
+            ],
+          ),
+        },
+      );
+    } catch (e) {
+      print(e);
+    }
+    // final document = await _firestore.collection('users').doc(uid).get();
+    // final Map<String, dynamic> data = document.data()!;
+    // return user.User.fromJson(data);
   }
 }
 // Future<user.User> getUserDetails(String uid) async {}
