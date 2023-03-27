@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "175828116338",
+    "project_id": "ease-it-cea68",
+    "storage_bucket": "ease-it-cea68.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:175828116338:android:272e35f9da225f4c6273eb",
+        "android_client_info": {
+          "package_name": "com.example.ease_it"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "175828116338-l8jhvdgrg2r2j7318ja74ggc2pdlabj1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.ease_it",
+            "certificate_hash": "f576a1b16f60d165f3d13f294244aa844db365c4"
+          }
+        },
+        {
+          "client_id": "175828116338-cqc2i6pva60nj3mpi0890iv7rk139egu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAbi1W5i6TV1r69Wom6JdZ27m3tBaRTHCY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "175828116338-cqc2i6pva60nj3mpi0890iv7rk139egu.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "175828116338-auhepjiicoat7ri1gqtj4cqudofjb1hr.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.easeIt"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
