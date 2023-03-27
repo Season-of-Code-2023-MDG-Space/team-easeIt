@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
+import 'package:google_ml_kit/google_ml_kit.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:bloc/bloc.dart';
 import 'package:external_path/external_path.dart';
@@ -22,17 +24,17 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   List<PlatformFile> files = [];
   List<String> filesPath = [];
   String singleFile = '';
-  Future<bool> checkPermission() async {
-    Permission storagePermission = Permission.storage;
-    if (await storagePermission.isGranted) {
+  Future<bool> checkPermission(String s) async {
+    Permission permission =
+        s == 'storage' ? Permission.storage : Permission.camera;
+    if (await permission.isGranted) {
       return true;
-    } else if (await storagePermission.isPermanentlyDenied) {
+    } else if (await permission.isPermanentlyDenied) {
       return false;
     } else {
-      await storagePermission.request();
-      storagePermission = Permission.storage;
-      return (await storagePermission.isPermanentlyDenied ||
-              await storagePermission.isDenied)
+      await permission.request();
+      permission = Permission.storage;
+      return (await permission.isPermanentlyDenied || await permission.isDenied)
           ? false
           : true;
     }
@@ -73,7 +75,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       });
       on<PDFPickEvent>((event, emit) async {
         emit(const Loading());
-        bool isGranted = await checkPermission();
+        bool isGranted = await checkPermission('storage');
         if (isGranted) {
           try {
             FilePickerResult? result =
@@ -98,6 +100,50 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             }
           } catch (e) {
             emit(Error(e.toString()));
+          }
+        }
+      });
+      on<ImageEvent>((event, emit) async {
+        emit(const Loading());
+        bool isPermissionAccepted = await checkPermission('storage');
+        if (isPermissionAccepted) {
+          final pickedImage =
+              await ImagePicker().pickImage(source: ImageSource.gallery);
+          if (pickedImage != null) {
+            final inputImage = InputImage.fromFilePath(pickedImage.path);
+            final textDetector = GoogleMlKit.vision.textDetector();
+            final RecognisedText recognisedText =
+                await textDetector.processImage(inputImage);
+            await textDetector.close();
+            String finalText = '';
+            for (TextBlock block in recognisedText.blocks) {
+              for (TextLine line in block.lines) {
+                finalText += '${line.text}\n';
+              }
+            }
+            emit(ShowResultImage(text: finalText));
+          }
+        }
+      });
+      on<CameraEvent>((event, emit) async {
+        emit(const Loading());
+        bool isPermissionAccepted = await checkPermission('camera');
+        if (isPermissionAccepted) {
+          final pickedImage =
+              await ImagePicker().pickImage(source: ImageSource.camera);
+          if (pickedImage != null) {
+            final inputImage = InputImage.fromFilePath(pickedImage.path);
+            final textDetector = GoogleMlKit.vision.textDetector();
+            final RecognisedText recognisedText =
+                await textDetector.processImage(inputImage);
+            await textDetector.close();
+            String finalText = '';
+            for (TextBlock block in recognisedText.blocks) {
+              for (TextLine line in block.lines) {
+                finalText += '${line.text}\n';
+              }
+            }
+            emit(ShowResultCamera(text: finalText));
           }
         }
       });

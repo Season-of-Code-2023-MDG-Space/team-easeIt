@@ -1,3 +1,4 @@
+import 'package:ease_it/ui/widgets/image_results.dart';
 import 'package:ease_it/ui/widgets/pdf_results.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,6 +9,7 @@ import '../../data/services/local/storage_service.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../../domain/repositories/user_repository.dart';
 import '../../utils/app_theme.dart';
+import '../widgets/camera_results.dart';
 import 'bloc/home_bloc.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -86,15 +88,6 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
         body: const HomeBody(),
-        floatingActionButton: Padding(
-          padding: EdgeInsets.all(10.h),
-          child: FloatingActionButton(
-            elevation: 3,
-            backgroundColor: AppTheme.blue,
-            onPressed: () {},
-            child: const Icon(Icons.add, color: AppTheme.lightBlue),
-          ),
-        ),
       ),
     );
   }
@@ -157,7 +150,9 @@ class _HomeBodyState extends State<HomeBody> {
                     padding: EdgeInsets.only(
                         top: 10.h, bottom: 5.h, right: 10.w, left: 10.w),
                     child: GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        context.read<HomeBloc>().add(const ImageEvent());
+                      },
                       child: SizedBox(
                         width: double.infinity,
                         child: Card(
@@ -187,7 +182,7 @@ class _HomeBodyState extends State<HomeBody> {
                         top: 10.h, bottom: 5.h, right: 10.w, left: 10.w),
                     child: GestureDetector(
                       onTap: () {
-                        print('PRESSSSSSEDDDD');
+                        context.read<HomeBloc>().add(const CameraEvent());
                       },
                       child: SizedBox(
                         width: double.infinity,
@@ -222,6 +217,30 @@ class _HomeBodyState extends State<HomeBody> {
                 MaterialPageRoute(
                     builder: (_) => PDFResults(
                           outputFile: state.pdfFile,
+                        ))).then((value) {
+              Navigator.pop(context);
+              Get.offAndToNamed('home');
+            });
+          });
+        } else if (state is ShowResultImage) {
+          Future(() {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (_) => ImageResults(
+                          outputText: state.text,
+                        ))).then((value) {
+              Navigator.pop(context);
+              Get.offAndToNamed('home');
+            });
+          });
+        } else if (state is ShowResultCamera) {
+          Future(() {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (_) => CameraResults(
+                          outputText: state.text,
                         ))).then((value) {
               Navigator.pop(context);
               Get.offAndToNamed('home');

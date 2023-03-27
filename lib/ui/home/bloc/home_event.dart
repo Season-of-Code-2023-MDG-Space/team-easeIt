@@ -23,3 +23,15 @@ class PDFPickEvent extends HomeEvent {
   @override
   List<Object?> get props => [];
 }
+
+class ImageEvent extends HomeEvent {
+  const ImageEvent();
+  @override
+  List<Object?> get props => [];
+}
+
+class CameraEvent extends HomeEvent {
+  const CameraEvent();
+  @override
+  List<Object?> get props => [];
+}

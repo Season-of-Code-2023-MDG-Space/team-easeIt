@@ -34,8 +34,10 @@ dependencies:
   external_path: ^1.0.3
   pdf_merger: ^0.0.6
   syncfusion_flutter_pdfviewer: ^20.4.54
-  camera: ^0.10.3+2
+#  camera: ^0.10.3+2
   google_ml_kit: ^0.7.3
+  url_launcher: ^6.1.10
+  highlight_text: ^1.6.0
 
 dev_dependencies:
   flutter_test:
