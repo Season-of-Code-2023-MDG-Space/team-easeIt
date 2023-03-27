@@ -1,5 +1,6 @@
 import 'package:ease_it/ui/widgets/image_results.dart';
 import 'package:ease_it/ui/widgets/pdf_results.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,6 +11,7 @@ import '../../domain/repositories/auth_repository.dart';
 import '../../domain/repositories/user_repository.dart';
 import '../../utils/app_theme.dart';
 import '../widgets/camera_results.dart';
+import '../widgets/search_history.dart';
 import 'bloc/home_bloc.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -27,23 +29,38 @@ class HomeScreen extends StatelessWidget {
         appBar: AppBar(
           elevation: 2,
           backgroundColor: AppTheme.lightBlue,
-          leading: Padding(
-            padding: EdgeInsets.all(5.h),
-            child: CircleAvatar(
-              backgroundColor: AppTheme.blue,
-              radius: 20.h,
-            ),
-          ),
-          title: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Text(
-                'Hello !',
-                style: AppTheme.h4,
+          leading: Builder(builder: (context) {
+            return IconButton(
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+              icon: const Icon(
+                Icons.menu_outlined,
+                color: AppTheme.blue,
               ),
-              Text(
-                'Have a Great Day!',
-                style: AppTheme.h4,
+            );
+          }),
+          title: Row(
+            children: [
+              Padding(
+                padding: EdgeInsets.only(top: 5.h, right: 5.h, bottom: 5.h),
+                child: CircleAvatar(
+                  backgroundColor: AppTheme.blue,
+                  radius: 20.h,
+                ),
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Text(
+                    'Hello !',
+                    style: AppTheme.h4,
+                  ),
+                  Text(
+                    'Have a Great Day!',
+                    style: AppTheme.h4,
+                  ),
+                ],
               ),
             ],
           ),
@@ -88,6 +105,85 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
         body: const HomeBody(),
+        drawer: Drawer(
+          backgroundColor: AppTheme.lightBlue,
+          width: MediaQuery.of(context).size.width * 0.7,
+          elevation: 3,
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 30.h, horizontal: 5.w),
+            child: ListView(
+              children: [
+                ListTile(
+                  title: Text(
+                    'Profile',
+                    style: AppTheme.h4,
+                  ),
+                  leading: const Icon(
+                    Icons.person,
+                    color: AppTheme.blue,
+                  ),
+                  splashColor: Colors.black12.withAlpha(50),
+                  onTap: () {},
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15.r),
+                    side: const BorderSide(
+                      color: AppTheme.blue,
+                      width: 2,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 5.h),
+                ListTile(
+                  title: Text(
+                    'Search History',
+                    style: AppTheme.h4,
+                  ),
+                  leading: const Icon(
+                    Icons.history_outlined,
+                    color: AppTheme.blue,
+                  ),
+                  splashColor: Colors.black12.withAlpha(50),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (ctx) => const SearchHistoryScreen(),
+                      ),
+                    );
+                  },
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15.r),
+                    side: const BorderSide(
+                      color: AppTheme.blue,
+                      width: 2,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 5.h),
+                ListTile(
+                  title: Text(
+                    'Logout',
+                    style: AppTheme.h4,
+                  ),
+                  leading: const Icon(
+                    Icons.logout_outlined,
+                    color: AppTheme.blue,
+                  ),
+                  splashColor: Colors.black12.withAlpha(50),
+                  onTap: () {},
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15.r),
+                    side: const BorderSide(
+                      color: AppTheme.blue,
+                      width: 2,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 5.h),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
