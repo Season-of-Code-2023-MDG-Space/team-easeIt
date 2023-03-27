@@ -59,23 +59,18 @@ class FirebaseService {
   Future<List<Search>> getSearchHistory(String uid) async {
     final document = await _firestore.collection('users').doc(uid).get();
     final docData = document.data();
-    try {
-      final data = docData!['searches'] as List<dynamic>?;
-      List<Search> listOfSearches = [];
-      data?.forEach(
-        (element) => listOfSearches.add(
-          Search(
-              title: element['title'],
-              googleUrl: element['googleUrl'],
-              youtubeUrl: element['youtubeUrl'],
-              dateCreated: element['dateCreated']),
-        ),
-      );
-      return listOfSearches;
-    } catch (e) {
-      print(e.toString() + 'data is NULLLL');
-      return [];
-    }
+    final data = docData!['searches'] as List<dynamic>?;
+    List<Search> listOfSearches = [];
+    data?.forEach(
+      (element) => listOfSearches.add(
+        Search(
+            title: element['title'],
+            googleUrl: element['googleUrl'],
+            youtubeUrl: element['youtubeUrl'],
+            dateCreated: element['dateCreated']),
+      ),
+    );
+    return listOfSearches;
   }
 
   Future<void> storeHistory(String uid, Search searchData) async {
